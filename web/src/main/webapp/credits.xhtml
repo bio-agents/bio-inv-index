@@ -1,0 +1,33 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--suppress ALL -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="layout/local-template.xhtml">
+
+    <ui:define name="body">
+
+        <div id="content" class="body">
+            <div align="center">
+                <a href="http://isa-agents.org" target="_blank">
+                    <img src="img/credit.png" border="none" alt="Part of ISAagents" usemap="#Map"/>
+                </a>
+            </div>
+
+            <map name="Map" id="Map">
+                <area shape="rect" coords="380,102,458,181" href="https://github.com/ISA-agents/BioInvIndex/issues"
+                      target="_new" alt="Report Issues about the BII"/>
+                <area shape="rect" coords="299,187,377,267" href="https://github.com/ISA-agents/BioInvIndex"
+                      target="_new" alt="Get the source at GitHub"/>
+                <area shape="rect" coords="382,188,461,265" href="mailto:isaagents@googlegroups.com?subject=BII"
+                      target="_new" alt="Contact the ISA team"/>
+                <area shape="rect" coords="9,190,293,269" href="http://isa-agents.org" target="_new" alt="ISA agents"/>
+            </map>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,204 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:s="http://jboss.com/products/seam/taglib"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="layout/local-template.xhtml">
+
+<ui:define name="body">
+
+    <div class="searchPane">
+        <h:form>
+            <a4j:region renderRegionOnly="true">
+                <table border="0" style="table-layout:fixed">
+
+                    <tr>
+                        <td width="20%">
+                            <span class="searchText">freetext</span>
+                        </td>
+
+                        <td width="20%">
+                            <span class="searchText">organism</span>
+                        </td>
+                        <td width="20%">
+                            <span class="searchText">measurement</span>
+                        </td>
+
+                        <td width="20%">
+                            <span class="searchText">technology</span>
+                        </td>
+                        <td width="20%">
+                            <span class="searchText">platform</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+
+                        <td width="20%">
+                            <h:inputText autocomplete="on" id="freetext"
+                                         value="#{studyBeanProvider.searchPattern}"
+                                         styleClass="input_field_search"
+                                         label="#{freetext}"/>
+                        </td>
+
+                        <td width="20%">
+
+                            <h:selectOneMenu id="selOrganism" value="#{studyBeanProvider.organism}"
+                                             styleClass="dropdown_selector" style="width:150px">
+                                <s:selectItems value="#{filterProvider.organisms }"
+                                               var="organism"
+                                               label="#{organism}"
+                                               noSelectionLabel="Filter on organisms"/>
+                                <!--<s:convertEntity/>-->
+                            </h:selectOneMenu>
+
+                        </td>
+
+                        <td width="20%">
+                            <h:selectOneMenu id="endpoint" value="#{studyBeanProvider.endPoint}"
+                                             styleClass="dropdown_selector" style="width:165px">
+                                <s:selectItems value="#{filterProvider.endPoints}"
+                                               var="endPoint"
+                                               label="#{endPoint}"
+                                               noSelectionLabel="Filter on measurement"/>
+                                <a4j:support event="onchange" reRender="technology"/>
+                                <!--<s:convertEntity/>-->
+                            </h:selectOneMenu>
+                        </td>
+
+
+                        <td width="20%">
+                            <h:selectOneMenu id="technology"
+                                             value="#{studyBeanProvider.assayType}"
+                                             styleClass="dropdown_selector" style="width:150px">
+                                <s:selectItems
+                                        value="#{filterProvider.getAssayTechnologies(studyBeanProvider.endPoint)}"
+                                        var="assayType"
+                                        label="#{assayType}"
+                                        noSelectionLabel="Filter on technology"/>
+                                <!--<a4j:support event="onchange" reRender="endpoint"/>-->
+                                <!--<s:convertEntity/>-->
+                            </h:selectOneMenu>
+
+                        </td>
+
+
+                        <td width="20%">
+                            <h:selectOneMenu id="selPlatform" value="#{studyBeanProvider.platform}"
+                                             styleClass="dropdown_selector" style="width:150px">
+                                <s:selectItems value="#{filterProvider.platforms}"
+                                               var="platform"
+                                               label="#{platform}"
+                                               noSelectionLabel="Filter on Platform"/>
+                                <!--<s:convertEntity/>-->
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="5" valign="top" align="right">
+                            <!--<span class="moreinformation"><a href="browse_studies.seam">clear fields</a></span>-->
+
+                            <h:commandButton value="Search"
+                                             action="/browse_studies.seam"
+                                             image="img/menu_css/search.png"
+                                             styleClass="search-button"/>
+                        </td>
+                    </tr>
+                </table>
+            </a4j:region>
+        </h:form>
+
+    </div>
+
+
+    <a4j:outputPanel rendered="#{studyBeanProvider.hasFilterApplied()}">
+        <div class="filtersPane" align="right">
+            #{studyBeanProvider.getFilterString()}
+            <span class="study_id_button">
+                <a href="browse_studies.seam?searchPattern=&amp;platform=&amp;organism=&amp;endPoint=&amp;assayType=">
+                    Clear
+                </a>
+            </span>
+        </div>
+    </a4j:outputPanel>
+
+    <div>
+        <p align="right" class="static_info_text">
+            <span class="property-tag"><h:outputText value="#{browseStudyBeanModel.rowCount} "/></span>
+            studies containing &nbsp;<span class="property-tag"><h:outputText
+                value="#{browseStudyBeanModel.totalAssays}"/></span>
+            assays
+
+        </p>
+    </div>
+
+
+    <h:form styleClass="body">
+        <!--<a4j:region>-->
+        <rich:datascroller for="studies" renderIfSinglePage="false"/>
+        <rich:spacer height="5"/>
+        <rich:dataTable
+                width="100%" border="0" align="center"
+                id="studies"
+                rows="15"
+                rowClasses="even"
+                cellpadding="0" cellspacing="0" style="table-layout:fixed; vertical-align:top;"
+                var="assayGroup"
+                value="#{browseStudyBeanModel.itemList}">
+
+            <rich:column width="60%" style="vertical-align: top">
+                <h:outputLink value="study.seam?studyId=#{assayGroup.acc}" styleClass="study_id_button">
+                    <span>#{assayGroup.acc}</span><span>View record</span>
+                </h:outputLink>
+            </rich:column>
+
+            <rich:column style="vertical-align: top">
+                <div align="right">
+                    <span class="feature-tag"><h:outputText value="#{assayGroup.organism}"/></span>
+                </div>
+            </rich:column>
+
+
+            <rich:column breakBefore="true" styleClass="study-info" style="vertical-align: top">
+
+                <h:outputText value="#{assayGroup.title}"/>
+            </rich:column>
+
+
+            <rich:column style="align:right" styleClass="study-info">
+
+                <div class="assay-tag" align="right">
+
+                    <rich:dataTable style="align:right" width="100%"
+                                    value="#{assayGroup.assayBeans}" var="assayBean">
+                        <rich:column width="100%">
+                            <span class="assaycount-tag">
+                                <h:outputText value="#{assayBean.count}"/>
+                            </span>
+                            <span class="assay-information">
+                                <h:outputText value="#{assayBean.getDisplayLabel()}"/>
+                            </span>
+                        </rich:column>
+
+                    </rich:dataTable>
+
+                </div>
+
+
+            </rich:column>
+
+            <rich:column breakBefore="true">
+                <br/>
+            </rich:column>
+
+        </rich:dataTable>
+        <!--</a4j:region>-->
+    </h:form>
+
+</ui:define>
+
+</ui:composition>
